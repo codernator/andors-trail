@@ -35,32 +35,32 @@ public final class ItemInfoActivity extends Activity {
 		Bundle params = intent.getExtras();
 		String itemTypeID = params.getString("itemTypeID");
 		final ItemType itemType = world.itemTypes.getItemType(itemTypeID);
-        final ItemType equippedType = itemType.isEquippable()
-                ? world.model.player.inventory.getItemTypeInWearSlot(itemType.category.inventorySlot)
-                : null;
+		final ItemType equippedType = itemType.isEquippable()
+				? world.model.player.inventory.getItemTypeInWearSlot(itemType.category.inventorySlot)
+				: null;
 
 		final String buttonText = params.getString("buttonText");
 		boolean buttonEnabled = params.getBoolean("buttonEnabled");
-        final Resources resources = getResources();
+		final Resources resources = getResources();
 
 		setContentView(R.layout.iteminfo);
 
-        fillTitle(world, resources, (TextView) findViewById(R.id.iteminfo_title), itemType, (itemType == equippedType));
-        fillDescription((TextView) findViewById(R.id.iteminfo_description), itemType);
-        fillCategory((TextView) findViewById(R.id.iteminfo_category), itemType);
-        fillItemEffects((ItemEffectsView) findViewById(R.id.iteminfo_effects), itemType);
-        fillDisplayType(resources, (TextView) findViewById(R.id.iteminfo_displaytype), itemType);
+		fillTitle(world, resources, (TextView) findViewById(R.id.iteminfo_title), itemType, (itemType == equippedType));
+		fillDescription((TextView) findViewById(R.id.iteminfo_description), itemType);
+		fillCategory((TextView) findViewById(R.id.iteminfo_category), itemType);
+		fillItemEffects((ItemEffectsView) findViewById(R.id.iteminfo_effects), itemType);
+		fillDisplayType(resources, (TextView) findViewById(R.id.iteminfo_displaytype), itemType);
 
-        if (equippedType != null && equippedType != itemType){
-            findViewById(R.id.compareinfo).setVisibility(View.VISIBLE);
-            fillTitle(world, resources, (TextView) findViewById(R.id.compareinfo_title), equippedType, true);
-            fillDescription((TextView) findViewById(R.id.compareinfo_description), equippedType);
-            fillCategory((TextView) findViewById(R.id.compareinfo_category), equippedType);
-            fillItemEffects((ItemEffectsView) findViewById(R.id.compareinfo_effects), equippedType);
-            fillDisplayType(resources, (TextView) findViewById(R.id.compareinfo_displaytype), equippedType);
-        } else {
-            findViewById(R.id.compareinfo).setVisibility(View.GONE);
-        }
+		if (equippedType != null && equippedType != itemType){
+			findViewById(R.id.compareinfo).setVisibility(View.VISIBLE);
+			fillTitle(world, resources, (TextView) findViewById(R.id.compareinfo_title), equippedType, true);
+			fillDescription((TextView) findViewById(R.id.compareinfo_description), equippedType);
+			fillCategory((TextView) findViewById(R.id.compareinfo_category), equippedType);
+			fillItemEffects((ItemEffectsView) findViewById(R.id.compareinfo_effects), equippedType);
+			fillDisplayType(resources, (TextView) findViewById(R.id.compareinfo_displaytype), equippedType);
+		} else {
+			findViewById(R.id.compareinfo).setVisibility(View.GONE);
+		}
 
 		Button b = (Button) findViewById(R.id.iteminfo_close);
 		b.setOnClickListener(new OnClickListener() {
@@ -92,45 +92,45 @@ public final class ItemInfoActivity extends Activity {
 
 	}
 
-    private static void fillTitle(WorldContext world, Resources resources, TextView tv, ItemType itemType, boolean equipped) {
-        tv.setText(itemType.getName(world.model.player) + (equipped ? " " + resources.getString(R.string.iteminfo_title_equipped) : ""));
-        world.tileManager.setImageViewTileForSingleItemType(resources, tv, itemType);
+	private static void fillTitle(WorldContext world, Resources resources, TextView tv, ItemType itemType, boolean equipped) {
+		tv.setText(itemType.getName(world.model.player) + (equipped ? " " + resources.getString(R.string.iteminfo_title_equipped) : ""));
+		world.tileManager.setImageViewTileForSingleItemType(resources, tv, itemType);
 
-    }
+	}
 
-    private static void fillCategory(TextView tv, ItemType itemType) {
-        tv.setText(itemType.category.displayName);
-    }
+	private static void fillCategory(TextView tv, ItemType itemType) {
+		tv.setText(itemType.category.displayName);
+	}
 
-    private static void fillDisplayType(Resources resources, TextView tv, ItemType itemType) {
-        if (itemType.isOrdinaryItem()) {
-            tv.setVisibility(View.GONE);
-        } else {
-            tv.setVisibility(View.VISIBLE);
-            final String diplayType = getDisplayTypeString(resources, itemType);
-            tv.setText(diplayType);
-        }
-    }
+	private static void fillDisplayType(Resources resources, TextView tv, ItemType itemType) {
+		if (itemType.isOrdinaryItem()) {
+			tv.setVisibility(View.GONE);
+		} else {
+			tv.setVisibility(View.VISIBLE);
+			final String diplayType = getDisplayTypeString(resources, itemType);
+			tv.setText(diplayType);
+		}
+	}
 
-    private static void fillItemEffects(ItemEffectsView iev, ItemType itemType) {
-        iev.update(
-                itemType.effects_equip,
-                itemType.effects_use == null ? null : Collections.singletonList(itemType.effects_use),
-                itemType.effects_hit == null ? null : Collections.singletonList(itemType.effects_hit),
-                itemType.effects_kill == null ? null : Collections.singletonList(itemType.effects_kill),
-                itemType.isWeapon()
-        );
-    }
+	private static void fillItemEffects(ItemEffectsView iev, ItemType itemType) {
+		iev.update(
+				itemType.effects_equip,
+				itemType.effects_use == null ? null : Collections.singletonList(itemType.effects_use),
+				itemType.effects_hit == null ? null : Collections.singletonList(itemType.effects_hit),
+				itemType.effects_kill == null ? null : Collections.singletonList(itemType.effects_kill),
+				itemType.isWeapon()
+		);
+	}
 
-    private static void fillDescription(TextView tv, ItemType itemType) {
-        String description = itemType.getDescription();
-        if (description != null) {
-            tv.setText(description);
-            tv.setVisibility(View.VISIBLE);
-        } else {
-            tv.setVisibility(View.GONE);
-        }
-    }
+	private static void fillDescription(TextView tv, ItemType itemType) {
+		String description = itemType.getDescription();
+		if (description != null) {
+			tv.setText(description);
+			tv.setVisibility(View.VISIBLE);
+		} else {
+			tv.setVisibility(View.GONE);
+		}
+	}
 
 
 	public static String getDisplayTypeString(Resources res, ItemType itemType) {
