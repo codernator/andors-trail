@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.gpl.rpg.AndorsTrail.AndorsTrailApplication;
 import com.gpl.rpg.AndorsTrail.R;
 import com.gpl.rpg.AndorsTrail.context.WorldContext;
+import com.gpl.rpg.AndorsTrail.model.item.Inventory;
 import com.gpl.rpg.AndorsTrail.model.item.ItemType;
 import com.gpl.rpg.AndorsTrail.view.ItemEffectsView;
 
@@ -35,9 +36,25 @@ public final class ItemInfoActivity extends Activity {
 		Bundle params = intent.getExtras();
 		String itemTypeID = params.getString("itemTypeID");
 		final ItemType itemType = world.itemTypes.getItemType(itemTypeID);
-		final ItemType equippedType = itemType.isEquippable()
-				? world.model.player.inventory.getItemTypeInWearSlot(itemType.category.inventorySlot)
-				: null;
+        final ItemType equippedType;
+        final ItemType secondaryEquippedType;
+
+        if (itemType.isEquippable()) {
+            equippedType = world.model.player.inventory.getItemTypeInWearSlot(itemType.category.inventorySlot);
+            if (itemType.category.inventorySlot == Inventory.WearSlot.leftring)
+            {
+                secondaryEquippedType = world.model.player.inventory.getItemTypeInWearSlot(Inventory.WearSlot.rightring);
+            } else if (itemType.category.inventorySlot == Inventory.WearSlot.weapon) {
+                secondaryEquippedType = world.model.player.inventory.getItemTypeInWearSlot(Inventory.WearSlot.shield);
+            } else {
+                secondaryEquippedType = null;
+            }
+        } else {
+            equippedType = null;
+            secondaryEquippedType = null;
+        }
+
+
 
 		final String buttonText = params.getString("buttonText");
 		boolean buttonEnabled = params.getBoolean("buttonEnabled");
@@ -45,7 +62,7 @@ public final class ItemInfoActivity extends Activity {
 
 		setContentView(R.layout.iteminfo);
 
-		fillTitle(world, resources, (TextView) findViewById(R.id.iteminfo_title), itemType, (itemType == equippedType));
+		fillTitle(world, resources, (TextView) findViewById(R.id.iteminfo_title), itemType, (itemType == equippedType || itemType == secondaryEquippedType));
 		fillDescription((TextView) findViewById(R.id.iteminfo_description), itemType);
 		fillCategory((TextView) findViewById(R.id.iteminfo_category), itemType);
 		fillItemEffects((ItemEffectsView) findViewById(R.id.iteminfo_effects), itemType);
@@ -61,6 +78,17 @@ public final class ItemInfoActivity extends Activity {
 		} else {
 			findViewById(R.id.compareinfo).setVisibility(View.GONE);
 		}
+
+        if (secondaryEquippedType != null && itemType != secondaryEquippedType && equippedType != secondaryEquippedType) {
+            findViewById(R.id.compare2info).setVisibility(View.VISIBLE);
+            fillTitle(world, resources, (TextView) findViewById(R.id.compare2info_title), secondaryEquippedType, true);
+            fillDescription((TextView) findViewById(R.id.compare2info_description), secondaryEquippedType);
+            fillCategory((TextView) findViewById(R.id.compare2info_category), secondaryEquippedType);
+            fillItemEffects((ItemEffectsView) findViewById(R.id.compare2info_effects), secondaryEquippedType);
+            fillDisplayType(resources, (TextView) findViewById(R.id.compare2info_displaytype), secondaryEquippedType);
+        } else {
+            findViewById(R.id.compare2info).setVisibility(View.GONE);
+        }
 
 		Button b = (Button) findViewById(R.id.iteminfo_close);
 		b.setOnClickListener(new OnClickListener() {
