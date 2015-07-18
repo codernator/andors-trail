@@ -402,6 +402,9 @@
 		<item>@xml/blackwater_mountain50</item>
 		<item>@xml/blackwater_mountain51</item>
 		<item>@xml/blackwater_mountain52</item>
+		<item>@xml/blackwater_mountain5a</item>
+		<item>@xml/blackwater_mountain5c</item>
+		<item>@xml/blackwater_mountain7a</item>
 
 		<!-- maps for v0.6.10 -->
 		<item>@xml/wild0</item>
